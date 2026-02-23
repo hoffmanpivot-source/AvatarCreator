@@ -1,9 +1,12 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import AvatarViewer from './components/AvatarViewer';
+import type { AvatarViewerHandle } from './components/AvatarViewer';
 import SliderPanel from './components/SliderPanel';
 import SkinTonePicker from './components/SkinTonePicker';
 import Toolbar from './components/Toolbar';
 import CharacterList from './components/CharacterList';
+import DevButtons from './components/DevButtons';
+import { sendScreenshot, sendNote } from './utils/devFeedback';
 import { DEFAULT_PARAMS, DEFAULT_TUNE } from './data/defaults';
 import { findSkinTone } from './data/skinTones';
 import { downloadJSON, loadJSONFile, saveToLocalStorage, loadFromLocalStorage } from './utils/fileIO';
@@ -24,6 +27,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('body');
   const [characters, setCharacters] = useState<CharacterPreset[]>([]);
   const [showCharList, setShowCharList] = useState(true);
+  const viewerRef = useRef<AvatarViewerHandle>(null);
 
   // Load saved characters from localStorage on mount (seed with built-ins on first run)
   useEffect(() => {
@@ -128,6 +132,23 @@ export default function App() {
     setTuneValues((prev) => ({ ...prev, [key]: value }));
   }, []);
 
+  // --- Dev screenshot / note ---
+  const handleScreenshot = useCallback(() => {
+    const dataURL = viewerRef.current?.captureScreenshot();
+    if (!dataURL) {
+      alert('Could not capture screenshot');
+      return;
+    }
+    const description = prompt('Describe the issue (optional):') ?? '';
+    sendScreenshot(dataURL, description, characterName, params, tuneValues, skinTone.name);
+  }, [characterName, params, tuneValues, skinTone]);
+
+  const handleNote = useCallback(() => {
+    const text = prompt('What do you want to note?');
+    if (!text?.trim()) return;
+    sendNote(text.trim(), characterName, params, tuneValues, skinTone.name);
+  }, [characterName, params, tuneValues, skinTone]);
+
   // Keyboard shortcuts
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -167,6 +188,7 @@ export default function App() {
         )}
         <div className="viewer">
           <AvatarViewer
+            ref={viewerRef}
             params={params}
             tuneValues={tuneValues}
             skinToneRGB={skinTone.rgb}
@@ -178,6 +200,7 @@ export default function App() {
           >
             {showCharList ? '\u25C0' : '\u25B6'}
           </button>
+          <DevButtons onScreenshot={handleScreenshot} onNote={handleNote} />
         </div>
         <div className="sidebar-right">
           <SliderPanel
