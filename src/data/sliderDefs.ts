@@ -18,11 +18,11 @@ export interface SliderTab {
 }
 
 function p(key: ParamKey, label: string, leftLabel: string, rightLabel: string): SliderDef {
-  return { key, label, leftLabel, rightLabel, min: 0, max: 1, step: 0.01, source: 'params' };
+  return { key, label, leftLabel, rightLabel, min: -1, max: 2, step: 0.01, source: 'params' };
 }
 
 function t(key: TuneKey, label: string, leftLabel: string, rightLabel: string, max = 3): SliderDef {
-  return { key, label, leftLabel, rightLabel, min: 0, max, step: 0.01, source: 'tune' };
+  return { key, label, leftLabel, rightLabel, min: -1, max, step: 0.01, source: 'tune' };
 }
 
 export const SLIDER_TABS: SliderTab[] = [
