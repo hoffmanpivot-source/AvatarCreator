@@ -1,0 +1,48 @@
+.picker {
+  padding: 8px 12px;
+  border-top: 1px solid #333;
+}
+
+.currentLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: #aaa;
+  margin-bottom: 8px;
+}
+
+.section {
+  margin-bottom: 8px;
+}
+
+.sectionLabel {
+  font-size: 10px;
+  color: #6c5ce7;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.swatches {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.swatch:hover {
+  transform: scale(1.15);
+}
+
+.swatchActive {
+  border-color: #fff;
+  box-shadow: 0 0 0 2px #6c5ce7;
+}
